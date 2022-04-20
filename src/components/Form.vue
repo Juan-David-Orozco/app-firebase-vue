@@ -1,11 +1,12 @@
 <template>
-  <div class="container login" v-if="registro">
+  <div class="container border rounded" style="width: 50%" v-if="registro">
     <div id="titulo" class="row my-2">
       <h1>Registro del Sistema</h1>
     </div>
-    <div id="form" class="row">
-      <div class="col-8 border rounded">
-        <div class="form-group">
+    <div id="form" class="row mt-0">
+      <div class="col-12">
+
+        <div class="form-group my-1">
           <label for="name" class="cols-sm-2 control-label">{{
             campo_nombre
           }}</label>
@@ -25,7 +26,7 @@
           </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group my-1">
           <label for="email" class="cols-sm-2 control-label">{{
             campo_email
           }}</label>
@@ -46,7 +47,7 @@
           </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group my-1">
           <label for="password" class="cols-sm-2 control-label">{{
             campo_pass
           }}</label>
@@ -67,7 +68,7 @@
           </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group my-1">
           <label for="confirm" class="cols-sm-2 control-label">{{
             campo_pass_confirm
           }}</label>
@@ -88,26 +89,31 @@
           </div>
         </div>
 
-        <div class="form-group row">
-          <div class="col-3"></div>
+        <div class="form-group row my-2">
           <div
-            class="col-6 btn btn-primary btn-lg btn-block login-button"
+            class="col-sm-5 btn btn-primary mx-auto my-1"
             @click="manejoClick($event)"
           >
-            Resgistrar usuario
+            Resgistrar
           </div>
-          <div class="col-3"></div>
+          <div
+            class="col-sm-5 btn btn-info mx-auto my-1"
+            @click="registro=false"
+          >
+            Cancelar
+          </div>
         </div>
+
       </div>
     </div>
   </div>
   <div v-else>
     <div id="login">
-      <div class="container my-3 border rounded" style="width: 350px">
+      <div class="container my-3 border rounded" style="width: 50%">
         <div class="row">
-          <div class="col-12 text-center"><h3>Ingreso al Sistema</h3></div>
+          <div class="col-12 text-center my-2"><h3>Ingreso al Sistema</h3></div>
         </div>
-        <div class="form-group">
+        <div class="form-group my-1">
           <label for="email" class="cols-sm-2 control-label"
             >Correo Electrónico</label
           >
@@ -125,7 +131,7 @@
             </div>
           </div>
         </div>
-        <div class="form-group">
+        <div class="form-group my-1">
           <label for="password" class="cols-sm-2 control-label"
             >Contraseña</label
           >
@@ -143,13 +149,13 @@
             </div>
           </div>
         </div>
-        <div class="form-group">
+        <div class="form-group my-2">
           <button type="button" class="btn btn-primary" @click="ingresar">
             Ingresar
           </button>
         </div>
-        <div class="usuario_nuevo">
-          <a href="#" @click="registro = true">¿Usuario nuevo?</a>
+        <div class="usuario_nuevo text-center">
+          <a href="#" @click="registro=true">¿Usuario nuevo?</a>
         </div>
       </div>
     </div>
