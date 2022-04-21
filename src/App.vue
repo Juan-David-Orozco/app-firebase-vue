@@ -33,7 +33,7 @@ export default {
       coleccionRaiz:'usuarios',
       idUsuario:'',
       coleccionGastos:'gastos',
-      docAlquilerCasa: 'vehiculos',
+      docAlquilerCasa: 'alquiler_casa',
       userData:{},
       logon:false,
       firebase:'',

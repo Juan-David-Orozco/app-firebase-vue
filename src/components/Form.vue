@@ -1,5 +1,5 @@
 <template>
-  <div class="container border rounded" style="width: 50%" v-if="registro">
+  <div class="container border rounded bg-light" style="width: 50%" v-if="registro">
     <div id="titulo" class="row my-2">
       <h1>Registro del Sistema</h1>
     </div>
@@ -109,7 +109,7 @@
   </div>
   <div v-else>
     <div id="login">
-      <div class="container my-3 border rounded" style="width: 50%">
+      <div class="container my-3 border rounded bg-light" style="width: 50%">
         <div class="row">
           <div class="col-12 text-center my-2"><h3>Ingreso al Sistema</h3></div>
         </div>
@@ -180,7 +180,7 @@ export default {
   props: ["firebase"],
   methods: {
     manejoClick: function () {
-      var email = "";
+      //var email = "";
       this.firebase
         .auth()
         .createUserWithEmailAndPassword(this.correo, this.clave)
@@ -199,7 +199,7 @@ export default {
           var errorMessage = error.message;
           console.log("Error: " + errorCode + " - " + errorMessage);
         });
-      console.log("Email: " + email);
+      //console.log("Email: " + email);
     },
     ingresar: function () {
       this.firebase
