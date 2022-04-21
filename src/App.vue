@@ -6,13 +6,58 @@
         v-on:ingresoCorrecto='ingresoCorrecto($event)'>
       </loginForm>
     </div>
-    <div id='inicio' v-else>
-      <div>Usuario: {{userData.usuario}} </div>
-      <div>Tipo de gasto: {{userData.gastos.tipo}} </div>
-      <div>Monto del Gasto: {{userData.gastos.monto}} </div>
+    <div id='inicio' class="m-2 p-2" v-else>
+      <div id='librosContainer' class='container border p-2'>
+        <div class='bg-dark text-white text-center my-1'>
+          <h1>Lista de libros a leer</h1>
+        </div>
+        <div class="container text-center mt-4">
+          <div class='row lead border rounded bg-light text-primary p-2 mt-3'>
+          <div class='col-sm-3 col-md-10 mx-auto my-auto'>
+            Nombre del libro
+          </div>
+          <div class='col-sm-3 col-md-8 mx-auto'>
+            <input v-model='nombreLibro' class='text-primary' type='text' style="width:100%">
+          </div>
+          <div class='col-sm-3 col-md-10 mx-auto my-auto'>
+            Autor del libro
+          </div>
+          <div class='col-sm-3 col-md-8 mx-auto'>
+            <input v-model='autorLibro' class='text-primary' type='text' style="width:100%">
+          </div>
+          <div class='col-12 my-2'>
+            <div
+              id='agregar' class='btn btn-primary'
+              v-on:click='manejarClick($event)'
+            >Agregar Libro</div>
+          </div>
+        </div>
+        </div>
+        <div class='container text-center mt-4'>
+          <div class='row lead border rounded bg-dark text-white py-1'>
+            <div class='col-5'>
+              Nombre del Libro
+            </div>
+            <div class='col-5'>
+              Autor del Libro
+            </div>
+            <div class='col-2'>
+              Accion
+            </div>
+          </div>
+          <librosComponente
+            v-for="(libro,index) in libros"
+            v-bind:libro='libro'
+            v-bind:id='libro.id'
+            v-bind:indice='index'
+            v-bind:key='index'
+            v-on:eliminarLibro='eliminar($event)'
+          ></librosComponente>
+        </div>
+      </div>
       <div
-        class="col-4 btn btn-info mx-auto my-1"
-        @click="logon=false"
+        class="col-4 btn btn-danger mx-auto my-2"
+        @click="salir()"
       >
         Salir
       </div>
@@ -24,25 +69,26 @@
 
 import firebase from 'firebase'
 import 'firebase/firestore'
+import librosComponente from './components/LibrosComponente.vue'
 import loginForm from './components/Form.vue';
 
 export default {
   name: 'app',
   data: function (){
     return {
-      coleccionRaiz:'usuarios',
+      libros :[],
+      nombreLibro:'',
+      autorLibro:'',
+      coleccion:{},
       idUsuario:'',
-      coleccionGastos:'gastos',
-      docAlquilerCasa: 'alquiler_casa',
-      userData:{},
       logon:false,
       firebase:'',
       db:'',
-      monto: 0
     }
   },
   components: {
-    loginForm
+    loginForm,
+    librosComponente
   },
   beforeMount: function () {
     const firebaseConfig = {
@@ -62,28 +108,51 @@ export default {
     console.log(this.firebase)
   },
   methods: {
+    manejarClick: function (evento) {
+      if (evento.target.id==='agregar'){
+        const libroData = {
+          nombre:this.nombreLibro,
+          autor:this.autorLibro
+        }
+        this.coleccion.add(libroData)
+        .then((docReference) => {
+          this.libros.unshift({
+            id:docReference.id,
+            nombre: libroData.nombre,
+            autor: libroData.autor
+          })
+        })
+        .catch((error) => {
+          alert('No se pudo agregar el libro al sistema. Error: '+error.message)
+        })
+        this.nombreLibro=''
+        this.autorLibro=''
+      }
+    },
+    eliminar: function (libroID){
+      this.coleccion.doc(libroID.id).delete()
+      this.libros.splice(libroID.indice,1)
+    },
     ingresoCorrecto: function(usuario) {
       console.log('User: '+ usuario)
       this.idUsuario = usuario
       this.logon = true
-      const doc = this.db.collection(this.coleccionRaiz).doc(this.idUsuario)
-      console.log(doc)
-      this.userData = {
-        usuario: doc.id,
-        gastos: {}
-      }
-      console.log(this.userData)
-      const gastos = doc.collection(this.coleccionGastos)
-      //const alquilerCasa = gastos.doc('alquiler_casa')
-      const alquilerCasa = gastos.doc(this.docAlquilerCasa)
-      const montoTemp = this.monto
-      this.userData.gastos = {
-        tipo: alquilerCasa.id,
-        monto: montoTemp
-      }
-      alquilerCasa.get().then((doc)=>{
-        this.userData.gastos.monto = doc.data().monto
+      this.coleccion = this.db.collection('/usuarios/'+usuario+'/libros')
+      console.log(this.coleccion)
+      this.coleccion.get()
+      .then((libros)=>{
+        libros.forEach((libro) => {
+          this.libros.push({
+            id:libro.id,
+            nombre:libro.data().nombre,
+            autor:libro.data().autor
+          })
+        })
       })
+    },
+    salir: function(){
+      this.logon = false
+      this.libros = []
     }
   }
 }
